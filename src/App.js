@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.less';
-import { getSocket } from './socket';
+import { getSocket, setSocketData } from './socket';
 import { Button } from 'antd';
+import MessageBox from './components/MessageBox';
+import { getNickName } from './utils';
 
 class App extends Component {
   constructor(props) {
@@ -19,8 +21,9 @@ class App extends Component {
   // };
   handleClickCreate = async () => {
     const socket = await getSocket();
-    socket.emit('create_room');
+    socket.emit('create_room', { nickName: getNickName() });
     socket.on('create_room_success', (roomId) => {
+      setSocketData({ roomId });
       this.setState({
         roomId,
       });
@@ -33,6 +36,9 @@ class App extends Component {
         {roomId ? (
           <div>
             <div>room id: {roomId}</div>
+            <div className="message-part">
+              <MessageBox />
+            </div>
           </div>
         ) : (
           <div>

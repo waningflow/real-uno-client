@@ -1,0 +1,26 @@
+.message-box-container {
+  min-width: 300px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  .message-box-list {
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    text-align: left;
+    padding: 6px;
+    overflow-y: auto;
+    .nickname {
+      color: #aaa;
+    }
+  }
+  .message-box-sender {
+    height: 32px;
+    display: flex;
+    flex-direction: row;
+    .ant-btn {
+      margin-left: 8px;
+    }
+  }
+}

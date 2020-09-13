@@ -15,4 +15,8 @@ const getSocket = () => {
   });
 };
 
-export { getSocket };
+const setSocketData = (obj = {}) => {
+  socket._data = Object.assign(socket._data || {}, obj);
+};
+
+export { getSocket, setSocketData };

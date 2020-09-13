@@ -1,30 +1,71 @@
 import React from 'react';
-import {getSocket} from '../../socket'
-import { Button } from 'antd';
+import { getSocket } from '../../socket';
+import { Button, Input } from 'antd';
+import './index.less';
 
 class MessageBox extends React.Component {
   socket = null;
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputValue: '',
+      messageList: [],
+    };
+  }
   componentDidMount() {
-    this.init()
+    this.init();
   }
 
   init = async () => {
     this.socket = await getSocket();
-    this.socket.on('message', data => {
-      console.log(data)
-    })
-  }
+    this.socket.on('message', (data) => {
+      this.pushMessage(data);
+    });
+  };
+
+  pushMessage = (newMessage) => {
+    const { messageList } = this.state;
+    messageList.push(newMessage);
+    this.setState({ messageList });
+  };
 
   handleSendMessage = () => {
+    const { inputValue } = this.state;
+    const data = {
+      msg: inputValue,
+    };
+    this.socket.send(data);
+    this.setState({
+      inputValue: '',
+    });
+  };
 
-  }
+  handleChangeInput = (e) => {
+    this.setState({
+      inputValue: e.target.value,
+    });
+  };
 
   render() {
+    const { inputValue, messageList } = this.state;
     return (
-      <div>
-        <div></div>
-        <div>
-
+      <div className="message-box-container">
+        <div className="message-box-list">
+          {messageList.map((v) => {
+            return (
+              <div key={v.msgId}>
+                <span className="nickname">{v.nickName}:</span> {v.msg}
+              </div>
+            );
+          })}
+        </div>
+        <div className="message-box-sender">
+          <Input
+            value={inputValue}
+            onChange={this.handleChangeInput}
+            onPressEnter={this.handleSendMessage}
+          ></Input>
+          <Button onClick={this.handleSendMessage}>Send</Button>
         </div>
       </div>
     );
