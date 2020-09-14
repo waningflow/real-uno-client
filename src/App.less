@@ -2,6 +2,35 @@
 
 .App {
   text-align: center;
+  .home-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    .home-create {
+      margin-bottom: 16px;
+      .ant-btn {
+        width: 265px;
+      }
+    }
+    .home-or {
+      margin-bottom: 16px;
+      color: #aaa;
+    }
+    .home-join {
+      display: flex;
+      flex-direction: row;
+      .ant-input {
+        width: 160px;
+        margin-right: 10px;
+      }
+    }
+  }
   .message-part {
     width: 300px;
     height: 400px;
