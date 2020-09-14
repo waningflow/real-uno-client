@@ -64,7 +64,7 @@ class App extends Component {
     const { inputValue } = this.state;
     if (!inputValue) return;
     const socket = await getSocket();
-    socket.emit('join_room', { roomId: inputValue, nickName: getNickName() });
+    socket.emit('join_room', { roomId: inputValue.toLocaleLowerCase(), nickName: getNickName() });
   };
   render() {
     const { roomId, inputValue, roomData } = this.state;
@@ -72,7 +72,9 @@ class App extends Component {
       <div className="App">
         {roomId ? (
           <div className="home-main-container">
-            <div className="home-main-header">room id: {roomId}</div>
+            <div className="home-main-header">
+              <div className="home-title-roomid">房间号: {roomId.toUpperCase()}</div>
+            </div>
             <div className="home-main-content">
               <div className="room-part">
                 {roomData.map((v) => {
