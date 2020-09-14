@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.less';
-import { getSocket, setSocketData } from './socket';
 import { Button, Input, message as Toast } from 'antd';
 import MessageBox from './components/MessageBox';
+import { getSocket, setSocketData } from './socket';
 import { getNickName } from './utils';
+import './App.less';
 
 class App extends Component {
   constructor(props) {
@@ -12,6 +11,7 @@ class App extends Component {
     this.state = {
       roomId: '',
       inputValue: '',
+      roomData: [],
     };
   }
   componentDidMount() {
@@ -19,25 +19,34 @@ class App extends Component {
   }
   init = async () => {
     const socket = await getSocket();
-    socket.on('create_room_result', ({ code, roomId, message }) => {
+    socket.on('create_room_result', ({ code, roomId, roomData, message }) => {
       if (code === 0) {
         setSocketData({ roomId });
         this.setState({
           roomId,
+          roomData,
         });
       } else {
-        console.log(message);
         Toast.error(message);
       }
     });
-    socket.on('join_room_result', ({ code, roomId, message }) => {
+    socket.on('join_room_result', ({ code, roomId, roomData, message }) => {
       if (code === 0) {
         setSocketData({ roomId });
         this.setState({
           roomId,
+          roomData,
         });
       } else {
-        console.log(message);
+        Toast.error(message);
+      }
+    });
+    socket.on('update_room', ({ code, roomData, message }) => {
+      if (code === 0) {
+        this.setState({
+          roomData,
+        });
+      } else {
         Toast.error(message);
       }
     });
@@ -58,18 +67,25 @@ class App extends Component {
     socket.emit('join_room', { roomId: inputValue, nickName: getNickName() });
   };
   render() {
-    const { roomId, inputValue } = this.state;
+    const { roomId, inputValue, roomData } = this.state;
     return (
       <div className="App">
         {roomId ? (
-          <div>
-            <div>room id: {roomId}</div>
-            <div className="message-part">
-              <MessageBox />
+          <div className="home-main-container">
+            <div className="home-main-header">room id: {roomId}</div>
+            <div className="home-main-content">
+              <div className="room-part">
+                {roomData.map((v) => {
+                  return <div>{v.nickName}</div>;
+                })}
+              </div>
+              <div className="message-part">
+                <MessageBox />
+              </div>
             </div>
           </div>
         ) : (
-          <div className="home-container">
+          <>
             <div className="home-create">
               <Button onClick={this.handleClickCreate} size="large" type="primary">
                 创建房间
@@ -89,7 +105,7 @@ class App extends Component {
                 加入房间
               </Button>
             </div>
-          </div>
+          </>
         )}
       </div>
     );

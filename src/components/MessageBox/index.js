@@ -60,12 +60,16 @@ class MessageBox extends React.Component {
           })}
         </div>
         <div className="message-box-sender">
-          <Input
+          <Input.Search
+            placeholder="input search text"
+            enterButton="发送"
+            // size="large"
+            onSearch={(value) => this.handleSendMessage(value)}
             value={inputValue}
             onChange={this.handleChangeInput}
-            onPressEnter={this.handleSendMessage}
-          ></Input>
-          <Button onClick={this.handleSendMessage}>Send</Button>
+            // onPressEnter={this.handleSendMessage}
+          ></Input.Search>
+          {/* <Button onClick={this.handleSendMessage}>Send</Button> */}
         </div>
       </div>
     );
