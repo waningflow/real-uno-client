@@ -37,7 +37,7 @@
   }
   .home-main-container {
     width: 900px;
-    height: 600px;
+    height: 620px;
     // background-color: #eee;
     display: flex;
     flex-direction: column;
@@ -60,14 +60,48 @@
       flex: 1;
       display: flex;
       flex-direction: row;
+      overflow: hidden;
       .room-part {
         flex: 1;
         margin-right: 20px;
         background-color: aliceblue;
         border-radius: 8px;
+        padding: 20px;
+        text-align: left;
+        .member-box {
+          display: inline-block;
+          margin: 0px 18px 18px 0;
+          width: 150px;
+          height: 150px;
+          border-radius: 8px;
+          // border: 1px solid #002f53;
+          box-shadow: 0 4px 10px 1px #bfbfbf;
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          background-position: center;
+          position: relative;
+          &:nth-child(3n) {
+            margin-right: 0;
+          }
+          .member-bottom-bar {
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            padding: 0 6px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 0 0 8px 8px;
+            text-align: center;
+          }
+        }
       }
       .message-part {
-        width: 300px;
+        width: 330px;
         background-color: aliceblue;
         border-radius: 8px;
       }

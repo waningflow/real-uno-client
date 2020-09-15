@@ -78,7 +78,15 @@ class App extends Component {
             <div className="home-main-content">
               <div className="room-part">
                 {roomData.map((v) => {
-                  return <div key={v.userInfo.userId}>{v.userInfo.nickName}</div>;
+                  return (
+                    <div
+                      key={v.userInfo.userId}
+                      className="member-box"
+                      style={{ backgroundImage: `url('${v.userInfo.avatarUrl}')` }}
+                    >
+                      <div className="member-bottom-bar">{v.userInfo.nickName}</div>
+                    </div>
+                  );
                 })}
               </div>
               <div className="message-part">

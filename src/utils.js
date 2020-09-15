@@ -23,7 +23,7 @@ const getUserInfo = () => {
     localStorage.setItem('nickName', name);
   }
   if (!avatar) {
-    avatar = `https://api.adorable.io/avatars/285/${name}.png`;
+    avatar = `https://api.adorable.io/avatars/150/${name}.png`;
     localStorage.setItem('avatarUrl', avatar);
   }
   return { userId: uid, nickName: name, avatarUrl: avatar };

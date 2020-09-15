@@ -54,7 +54,7 @@ class MessageBox extends React.Component {
           {messageList.map((v) => {
             return (
               <div key={v.msgId}>
-                <span className="nickname">{v.nickName}:</span> {v.msg}
+                <span className="nickname">{v.userInfo.nickName}:</span> {v.msg}
               </div>
             );
           })}
