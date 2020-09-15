@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Input, message as Toast } from 'antd';
 import MessageBox from './components/MessageBox';
 import { getSocket, setSocketData } from './socket';
-import { getNickName } from './utils';
+import { getUserInfo } from './utils';
 import './App.less';
 
 class App extends Component {
@@ -58,13 +58,13 @@ class App extends Component {
   };
   handleClickCreate = async () => {
     const socket = await getSocket();
-    socket.emit('create_room', { nickName: getNickName() });
+    socket.emit('create_room', { userInfo: getUserInfo() });
   };
   handleClickJoin = async () => {
     const { inputValue } = this.state;
     if (!inputValue) return;
     const socket = await getSocket();
-    socket.emit('join_room', { roomId: inputValue.toLocaleLowerCase(), nickName: getNickName() });
+    socket.emit('join_room', { roomId: inputValue.toLocaleLowerCase(), userInfo: getUserInfo() });
   };
   render() {
     const { roomId, inputValue, roomData } = this.state;
@@ -78,7 +78,7 @@ class App extends Component {
             <div className="home-main-content">
               <div className="room-part">
                 {roomData.map((v) => {
-                  return <div>{v.nickName}</div>;
+                  return <div key={v.userInfo.userId}>{v.userInfo.nickName}</div>;
                 })}
               </div>
               <div className="message-part">
