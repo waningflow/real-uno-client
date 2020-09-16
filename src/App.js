@@ -50,6 +50,21 @@ class App extends Component {
         Toast.error(message);
       }
     });
+    socket.on('connect', () => {
+      console.log('connect');
+    });
+    socket.on('disconnect', () => {
+      console.log('disconnect');
+    });
+    socket.on('reconnect_attempt', () => {
+      console.log('reconnect_attempt');
+    });
+    socket.on('reconnect_error', () => {
+      console.log('reconnect_error');
+    });
+    socket.on('reconnect_failed', () => {
+      console.log('reconnect_failed');
+    });
   };
   handleChangeInput = (e) => {
     this.setState({
