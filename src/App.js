@@ -27,6 +27,14 @@ class App extends Component {
         roomData,
       });
     });
+    socket.on('reset', () => {
+      console.log('reset');
+      setSocketData({ roomId: null });
+      this.setState({
+        roomId: null,
+        roomData: null,
+      });
+    });
     socket.on('create_room_result', ({ code, roomId, roomData, message }) => {
       if (code === 0) {
         setSocketData({ roomId });
