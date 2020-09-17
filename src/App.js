@@ -19,6 +19,14 @@ class App extends Component {
   }
   init = async () => {
     const socket = await getSocket();
+    socket.on('auto_join', ({ roomId, roomData }) => {
+      console.log('auto join');
+      setSocketData({ roomId });
+      this.setState({
+        roomId,
+        roomData,
+      });
+    });
     socket.on('create_room_result', ({ code, roomId, roomData, message }) => {
       if (code === 0) {
         setSocketData({ roomId });
@@ -65,6 +73,9 @@ class App extends Component {
     socket.on('reconnect_failed', () => {
       console.log('reconnect_failed');
     });
+    socket.on('reconnect', () => {
+      console.log('reconnect');
+    });
   };
   handleChangeInput = (e) => {
     this.setState({
@@ -92,14 +103,14 @@ class App extends Component {
             </div>
             <div className="home-main-content">
               <div className="room-part">
-                {roomData.map((v) => {
+                {roomData.users.map((v) => {
                   return (
                     <div
-                      key={v.userInfo.userId}
+                      key={v.userId}
                       className="member-box"
-                      style={{ backgroundImage: `url('${v.userInfo.avatarUrl}')` }}
+                      style={{ backgroundImage: `url('${v.avatarUrl}')` }}
                     >
-                      <div className="member-bottom-bar">{v.userInfo.nickName}</div>
+                      <div className="member-bottom-bar">{v.nickName}</div>
                     </div>
                   );
                 })}
