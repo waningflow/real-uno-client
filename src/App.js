@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Input, message as Toast, Tooltip } from 'antd';
+import cn from 'classnames';
 import MessageBox from './components/MessageBox';
 import { getSocket, setSocketData } from './socket';
 import { getUserInfo } from './utils';
@@ -144,7 +145,9 @@ class App extends Component {
                   return (
                     <div
                       key={v.userId}
-                      className="member-box"
+                      className={cn('member-box', {
+                        'member-box-self': v.userId === userInfo.userId,
+                      })}
                       style={{ backgroundImage: `url('${v.avatarUrl}')` }}
                     >
                       {v.userId === roomData.owner.userId && (
