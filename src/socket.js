@@ -6,13 +6,10 @@ const socketUrl = 'http://localhost:9013';
 let socket = null;
 const getSocket = () => {
   return new Promise((resolve) => {
-    if (!socket) {
+    if (!socket || !socket.connected) {
       socket = io(socketUrl, {
         query: { userInfo: JSON.stringify(getUserInfo()) },
       });
-      // socket.on('connect', () => {
-      //   resolve(socket);
-      // });
     }
     resolve(socket);
   });

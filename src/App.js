@@ -102,6 +102,13 @@ class App extends Component {
     const socket = await getSocket();
     socket.emit('join_room', { roomId: inputValue.toLocaleLowerCase(), userInfo });
   };
+  handleLeaveRoom = async () => {
+    const socket = await getSocket();
+    socket.disconnect();
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  };
   render() {
     const { roomId, inputValue, roomData, userInfo } = this.state;
     return (
@@ -123,7 +130,9 @@ class App extends Component {
                     开始游戏
                   </Button>
                 ))}
-              <Button size="large">离开房间</Button>
+              <Button size="large" onClick={this.handleLeaveRoom}>
+                离开房间
+              </Button>
             </div>
             <div className="home-main-content">
               <div className="room-part">
