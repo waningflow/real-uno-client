@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Input, message as Toast, Tooltip } from 'antd';
 import cn from 'classnames';
 import MessageBox from './components/MessageBox';
+import Game from './components/Game';
 import { getSocket, setSocketData } from './socket';
 import { getUserInfo } from './utils';
 import './App.less';
@@ -14,6 +15,7 @@ class App extends Component {
       inputValue: '',
       roomData: [],
       userInfo: getUserInfo(),
+      gameData: null,
     };
   }
   componentDidMount() {
@@ -68,6 +70,12 @@ class App extends Component {
         Toast.error(message);
       }
     });
+    socket.on('game_started', ({ gameData }) => {
+      console.log('game_started', gameData);
+      this.setState({
+        gameData,
+      });
+    });
     socket.on('connect', () => {
       console.log('connect');
     });
@@ -110,59 +118,67 @@ class App extends Component {
       window.location.reload();
     }, 500);
   };
+  handleStartGame = async () => {
+    const socket = await getSocket();
+    socket.emit('start_game');
+  };
   render() {
-    const { roomId, inputValue, roomData, userInfo } = this.state;
+    const { roomId, inputValue, roomData, userInfo, gameData } = this.state;
     return (
       <div className="App">
         {roomId ? (
-          <div className="home-main-container">
-            <div className="home-main-header">
-              <div className="home-title-roomid">
-                <Tooltip placement="top" title="复制房间号发给好友加入游戏">
-                  房间号: {roomId.toUpperCase()}
-                </Tooltip>
-              </div>
-              <div className="flex-grow"></div>
-              {roomData.owner.userId === userInfo.userId &&
-                (roomData.users.length < 2 ? (
-                  <Tooltip placement="top" title="至少两人才能开始游戏">
-                    <Button type="primary" disabled={roomData.users.length < 2} size="large">
+          gameData ? (
+            <Game />
+          ) : (
+            <div className="home-main-container">
+              <div className="home-main-header">
+                <div className="home-title-roomid">
+                  <Tooltip placement="top" title="复制房间号发给好友加入游戏">
+                    房间号: {roomId.toUpperCase()}
+                  </Tooltip>
+                </div>
+                <div className="flex-grow"></div>
+                {roomData.owner.userId === userInfo.userId &&
+                  (roomData.users.length < 2 ? (
+                    <Tooltip placement="top" title="至少两人才能开始游戏">
+                      <Button type="primary" disabled size="large">
+                        开始游戏
+                      </Button>
+                    </Tooltip>
+                  ) : (
+                    <Button type="primary" size="large" onClick={this.handleStartGame}>
                       开始游戏
                     </Button>
-                  </Tooltip>
-                ) : (
-                  <Button type="primary" disabled={roomData.users.length < 2} size="large">
-                    开始游戏
-                  </Button>
-                ))}
-              <Button size="large" onClick={this.handleLeaveRoom}>
-                离开房间
-              </Button>
-            </div>
-            <div className="home-main-content">
-              <div className="room-part">
-                {roomData.users.map((v) => {
-                  return (
-                    <div
-                      key={v.userId}
-                      className={cn('member-box', {
-                        'member-box-self': v.userId === userInfo.userId,
-                      })}
-                      style={{ backgroundImage: `url('${v.avatarUrl}')` }}
-                    >
-                      {v.userId === roomData.owner.userId && (
-                        <div className="member-label">房主</div>
-                      )}
-                      <div className="member-bottom-bar">{v.nickName}</div>
-                    </div>
-                  );
-                })}
+                  ))}
+                <Button size="large" onClick={this.handleLeaveRoom}>
+                  离开房间
+                </Button>
               </div>
-              <div className="message-part">
-                <MessageBox />
+              <div className="home-main-content">
+                <div className="room-part">
+                  {roomData.users.map((v) => {
+                    return (
+                      <div
+                        key={v.userId}
+                        className={cn('member-box', {
+                          'member-box-self': v.userId === userInfo.userId,
+                        })}
+                        style={{ backgroundImage: `url('${v.avatarUrl}')` }}
+                      >
+                        {v.userId === roomData.owner.userId && (
+                          <div className="member-label">房主</div>
+                        )}
+                        <div className="member-bottom-bar">{v.nickName}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="message-part">
+                  <MessageBox />
+                </div>
               </div>
             </div>
-          </div>
+          )
         ) : (
           <>
             <div className="home-create">
