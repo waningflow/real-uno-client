@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Input, message as Toast } from 'antd';
+import { Button, Input, message as Toast, Tooltip } from 'antd';
 import MessageBox from './components/MessageBox';
 import { getSocket, setSocketData } from './socket';
 import { getUserInfo } from './utils';
@@ -12,6 +12,7 @@ class App extends Component {
       roomId: '',
       inputValue: '',
       roomData: [],
+      userInfo: getUserInfo(),
     };
   }
   componentDidMount() {
@@ -91,23 +92,38 @@ class App extends Component {
     });
   };
   handleClickCreate = async () => {
+    const { userInfo } = this.state;
     const socket = await getSocket();
-    socket.emit('create_room', { userInfo: getUserInfo() });
+    socket.emit('create_room', { userInfo });
   };
   handleClickJoin = async () => {
-    const { inputValue } = this.state;
+    const { inputValue, userInfo } = this.state;
     if (!inputValue) return;
     const socket = await getSocket();
-    socket.emit('join_room', { roomId: inputValue.toLocaleLowerCase(), userInfo: getUserInfo() });
+    socket.emit('join_room', { roomId: inputValue.toLocaleLowerCase(), userInfo });
   };
   render() {
-    const { roomId, inputValue, roomData } = this.state;
+    const { roomId, inputValue, roomData, userInfo } = this.state;
     return (
       <div className="App">
         {roomId ? (
           <div className="home-main-container">
             <div className="home-main-header">
               <div className="home-title-roomid">房间号: {roomId.toUpperCase()}</div>
+              <div className="flex-grow"></div>
+              {roomData.owner.userId === userInfo.userId &&
+                (roomData.users.length < 2 ? (
+                  <Tooltip placement="top" title="至少两人才能开始游戏">
+                    <Button type="primary" disabled={roomData.users.length < 2} size="large">
+                      开始游戏
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Button type="primary" disabled={roomData.users.length < 2} size="large">
+                    开始游戏
+                  </Button>
+                ))}
+              <Button size="large">离开房间</Button>
             </div>
             <div className="home-main-content">
               <div className="room-part">
@@ -118,6 +134,9 @@ class App extends Component {
                       className="member-box"
                       style={{ backgroundImage: `url('${v.avatarUrl}')` }}
                     >
+                      {v.userId === roomData.owner.userId && (
+                        <div className="member-label">房主</div>
+                      )}
                       <div className="member-bottom-bar">{v.nickName}</div>
                     </div>
                   );

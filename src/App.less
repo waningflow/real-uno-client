@@ -37,13 +37,13 @@
   }
   .home-main-container {
     width: 900px;
-    height: 620px;
+    height: 640px;
     // background-color: #eee;
     display: flex;
     flex-direction: column;
     padding: 10px;
     .home-main-header {
-      height: 60px;
+      height: 100px;
       border-radius: 8px;
       margin-bottom: 20px;
       background-color: aliceblue;
@@ -54,6 +54,10 @@
       .home-title-roomid {
         font-size: 22px;
         margin-left: 16px;
+        font-weight: bold;
+      }
+      .ant-btn {
+        margin-right: 16px;
       }
     }
     .home-main-content {
@@ -82,6 +86,18 @@
           position: relative;
           &:nth-child(3n) {
             margin-right: 0;
+          }
+          .member-label {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            height: 20px;
+            line-height: 20px;
+            border-radius: 10px;
+            padding: 0 5px;
+            background-color: #fa8c16;
+            color: #fff;
+            font-size: 14px;
           }
           .member-bottom-bar {
             width: 100%;
@@ -132,4 +148,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.flex-grow {
+  flex-grow: 1;
 }
