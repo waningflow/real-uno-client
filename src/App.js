@@ -116,7 +116,11 @@ class App extends Component {
         {roomId ? (
           <div className="home-main-container">
             <div className="home-main-header">
-              <div className="home-title-roomid">房间号: {roomId.toUpperCase()}</div>
+              <div className="home-title-roomid">
+                <Tooltip placement="top" title="复制房间号发给好友加入游戏">
+                  房间号: {roomId.toUpperCase()}
+                </Tooltip>
+              </div>
               <div className="flex-grow"></div>
               {roomData.owner.userId === userInfo.userId &&
                 (roomData.users.length < 2 ? (
