@@ -139,7 +139,7 @@ class App extends Component {
                 </div>
                 <div className="flex-grow"></div>
                 {roomData.owner.userId === userInfo.userId &&
-                  (roomData.users.length < 2 ? (
+                  (roomData.users.length < 1 ? (
                     <Tooltip placement="top" title="至少两人才能开始游戏">
                       <Button type="primary" disabled size="large">
                         开始游戏
