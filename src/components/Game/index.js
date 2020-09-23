@@ -48,6 +48,7 @@ class Game extends React.Component {
       { width: 3, height: 0.1, depth: 3 },
       scene
     );
+
     var glass = new BABYLON.PBRMaterial('glass', scene);
     glass.reflectionTexture = hdrTexture;
     glass.refractionTexture = hdrTexture;
@@ -82,6 +83,38 @@ class Game extends React.Component {
     wood.albedoColor = BABYLON.Color3.White();
     wood.albedoTexture = new BABYLON.Texture('http://texture.waningflow.com/uno/albedo.png', scene);
     woodPlank.material = wood;
+
+    var columns = 14;  // 6 columns
+    var rows = 8;  // 4 rows
+
+    var faceUV = new Array(6);
+
+    for (var i = 0; i < 6; i++) {
+        faceUV[i] = new BABYLON.Vector4(i / columns, 0, (i + 1) / columns, 1 / rows);
+    }
+
+    let card = BABYLON.MeshBuilder.CreateBox(
+      'card',
+      { width: 0.6, height: 0.002, depth: 0.4, faceUV },
+      scene
+    );
+    card.translate(new BABYLON.Vector3(0, 1, 0), 0.05);
+    // var cardMaterial = new BABYLON.StandardMaterial("mat", scene);
+    // cardMaterial.diffuseTexture = new BABYLON.Texture("http://jerome.bousquie.fr/BJS/images/spriteAtlas.png", scene);
+
+    let cardMaterial = new BABYLON.PBRMaterial('cardMaterial', scene);
+    cardMaterial.reflectionTexture = hdrTexture;
+    cardMaterial.environmentIntensity = 1;
+    cardMaterial.specularIntensity = 0.3;
+    cardMaterial.reflectivityTexture = new BABYLON.Texture(
+      'http://textures.oss-cn-beijing.aliyuncs.com/uno/UNO_cards_deck.svg',
+      scene
+    );
+    // cardMaterial.specularTexture = new BABYLON.Texture(
+    //   'http://textures.oss-cn-beijing.aliyuncs.com/uno/UNO_cards_deck.svg',
+    //   scene
+    // );
+    card.material = cardMaterial;
   }
 
   render() {
