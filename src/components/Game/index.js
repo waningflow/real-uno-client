@@ -14,18 +14,34 @@ class Game extends React.Component {
       'Camera',
       -Math.PI / 2,
       Math.PI / 4,
-      10,
+      13,
       BABYLON.Vector3.Zero(),
       scene
     );
     camera.attachControl(canvas, true);
     camera.minZ = 1;
 
+    var light1 = new BABYLON.HemisphericLight('HemiLight', new BABYLON.Vector3(0, 1, 0), scene);
+    light1.specular = new BABYLON.Color3(0, 0, 0);
+    light1.groundColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+
     var envTexture = new BABYLON.CubeTexture(
       'http://texture.waningflow.com/uno/environment.dds',
       scene
     );
     scene.createDefaultSkybox(envTexture, true, 1000);
+
+    var table = BABYLON.MeshBuilder.CreateBox(
+      'table',
+      { width: 10, height: 0.5, depth: 10 },
+      scene
+    );
+    var tableMaterial = new BABYLON.StandardMaterial('tableMaterial', scene);
+    tableMaterial.diffuseTexture = new BABYLON.Texture(
+      'http://textures.oss-cn-beijing.aliyuncs.com/uno/albedo.png',
+      scene
+    );
+    table.material = tableMaterial;
 
     // var columns = 14; // 6 columns
     // var rows = 8; // 4 rows
