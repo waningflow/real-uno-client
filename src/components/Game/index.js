@@ -43,29 +43,31 @@ class Game extends React.Component {
     );
     table.material = tableMaterial;
 
-    // var columns = 14; // 6 columns
-    // var rows = 8; // 4 rows
+    var columns = 14; // 6 columns
+    var rows = 8; // 4 rows
 
-    // var faceUV = new Array(6);
+    var faceUV = new Array(6);
 
-    // for (var i = 0; i < 6; i++) {
-    //   faceUV[i] = new BABYLON.Vector4(i / columns, 0, (i + 1) / columns, 1 / rows);
-    // }
+    for (var i = 0; i < 6; i++) {
+      faceUV[i] = new BABYLON.Vector4(0, 0, 0, 0);
+    }
+    faceUV[4] = new BABYLON.Vector4(1 / columns, 0, 2 / columns, 1 / rows);
+    faceUV[5] = new BABYLON.Vector4(2 / columns, 0, 3 / columns, 1 / rows);
 
-    // let card = BABYLON.MeshBuilder.CreateBox(
-    //   'card',
-    //   { width: 0.6, height: 0.002, depth: 0.4, faceUV },
-    //   scene
-    // );
-    // card.translate(new BABYLON.Vector3(0, 1, 0), 0.5);
-    // var cardMaterial = new BABYLON.StandardMaterial('mat', scene);
-    // cardMaterial.alpha = 0.5;
-    // cardMaterial.diffuseTexture = new BABYLON.Texture(
-    //   'http://textures.oss-cn-beijing.aliyuncs.com/uno/UNO_cards_deck.svg',
-    //   scene
-    // );
+    let card = BABYLON.MeshBuilder.CreateBox(
+      'card',
+      { width: 3, height: 0.001, depth: 2, faceUV },
+      scene
+    );
+    card.position = new BABYLON.Vector3(0, 2, 0);
+    var cardMaterial = new BABYLON.StandardMaterial('mat', scene);
+    cardMaterial.diffuseTexture = new BABYLON.Texture(
+      'http://textures.oss-cn-beijing.aliyuncs.com/uno/UNO_cards_deck.svg',
+      scene
+    );
+    cardMaterial.diffuseTexture.hasAlpha = true;
 
-    // card.material = cardMaterial;
+    card.material = cardMaterial;
   }
 
   render() {
