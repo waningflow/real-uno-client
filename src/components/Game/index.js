@@ -10,111 +10,52 @@ class Game extends React.Component {
 
   handleSceneReady(scene) {
     const canvas = scene.getEngine().getRenderingCanvas();
-    var camera = new BABYLON.ArcRotateCamera(
+    const camera = new BABYLON.ArcRotateCamera(
       'Camera',
       -Math.PI / 2,
       Math.PI / 4,
-      6,
+      50,
       BABYLON.Vector3.Zero(),
       scene
     );
     camera.attachControl(canvas, true);
     camera.minZ = 0.1;
 
-    // Create objects
-    var hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(
+    var skybox = BABYLON.Mesh.CreateBox('skyBox', 100.0, scene);
+    var skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.disableLighting = true;
+    skybox.infiniteDistance = true;
+    skybox.material = skyboxMaterial;
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(
       'http://texture.waningflow.com/uno/environment.dds',
       scene
     );
-    var hdrSkybox = BABYLON.Mesh.CreateBox('hdrSkyBox', 1000.0, scene);
-    hdrSkybox.isPickable = false;
-    var hdrSkyboxMaterial = new BABYLON.PBRMaterial('skyBox', scene);
-    hdrSkyboxMaterial.backFaceCulling = false;
-    hdrSkyboxMaterial.reflectionTexture = hdrTexture.clone();
-    hdrSkyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    hdrSkyboxMaterial.microSurface = 1.0;
-    hdrSkyboxMaterial.disableLighting = true;
-    hdrSkybox.material = hdrSkyboxMaterial;
-    hdrSkybox.infiniteDistance = true;
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
 
-    var sphereGlass = BABYLON.Mesh.CreateSphere('sphereGlass', 48, 1.0, scene);
-    sphereGlass.translate(new BABYLON.Vector3(1, 0, 0), -3);
-    var sphereMetal = BABYLON.Mesh.CreateSphere('sphereMetal', 48, 1.0, scene);
-    sphereMetal.translate(new BABYLON.Vector3(1, 0, 0), 3);
-    var spherePlastic = BABYLON.Mesh.CreateSphere('spherePlastic', 48, 1.0, scene);
-    spherePlastic.translate(new BABYLON.Vector3(0, 0, 1), -3);
-    var woodPlank = BABYLON.MeshBuilder.CreateBox(
-      'plane',
-      { width: 3, height: 0.1, depth: 3 },
-      scene
-    );
+    // var columns = 14; // 6 columns
+    // var rows = 8; // 4 rows
 
-    var glass = new BABYLON.PBRMaterial('glass', scene);
-    glass.reflectionTexture = hdrTexture;
-    glass.refractionTexture = hdrTexture;
-    glass.linkRefractionWithTransparency = true;
-    glass.indexOfRefraction = 0.52;
-    glass.alpha = 0;
-    glass.microSurface = 1;
-    glass.reflectivityColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-    glass.albedoColor = new BABYLON.Color3(0.85, 0.85, 0.85);
-    sphereGlass.material = glass;
-    var metal = new BABYLON.PBRMaterial('metal', scene);
-    metal.reflectionTexture = hdrTexture;
-    metal.microSurface = 0.96;
-    metal.reflectivityColor = new BABYLON.Color3(0.85, 0.85, 0.85);
-    metal.albedoColor = new BABYLON.Color3(0.01, 0.01, 0.01);
-    sphereMetal.material = metal;
-    var plastic = new BABYLON.PBRMaterial('plastic', scene);
-    plastic.reflectionTexture = hdrTexture;
-    plastic.microSurface = 0.96;
-    plastic.albedoColor = new BABYLON.Color3(0.206, 0.94, 1);
-    plastic.reflectivityColor = new BABYLON.Color3(0.003, 0.003, 0.003);
-    spherePlastic.material = plastic;
-    var wood = new BABYLON.PBRMaterial('wood', scene);
-    wood.reflectionTexture = hdrTexture;
-    wood.environmentIntensity = 1;
-    wood.specularIntensity = 0.3;
-    wood.reflectivityTexture = new BABYLON.Texture(
-      'http://texture.waningflow.com/uno/reflectivity.png',
-      scene
-    );
-    wood.useMicroSurfaceFromReflectivityMapAlpha = true;
-    wood.albedoColor = BABYLON.Color3.White();
-    wood.albedoTexture = new BABYLON.Texture('http://texture.waningflow.com/uno/albedo.png', scene);
-    woodPlank.material = wood;
+    // var faceUV = new Array(6);
 
-    var columns = 14;  // 6 columns
-    var rows = 8;  // 4 rows
+    // for (var i = 0; i < 6; i++) {
+    //   faceUV[i] = new BABYLON.Vector4(i / columns, 0, (i + 1) / columns, 1 / rows);
+    // }
 
-    var faceUV = new Array(6);
-
-    for (var i = 0; i < 6; i++) {
-        faceUV[i] = new BABYLON.Vector4(i / columns, 0, (i + 1) / columns, 1 / rows);
-    }
-
-    let card = BABYLON.MeshBuilder.CreateBox(
-      'card',
-      { width: 0.6, height: 0.002, depth: 0.4, faceUV },
-      scene
-    );
-    card.translate(new BABYLON.Vector3(0, 1, 0), 0.05);
-    // var cardMaterial = new BABYLON.StandardMaterial("mat", scene);
-    // cardMaterial.diffuseTexture = new BABYLON.Texture("http://jerome.bousquie.fr/BJS/images/spriteAtlas.png", scene);
-
-    let cardMaterial = new BABYLON.PBRMaterial('cardMaterial', scene);
-    cardMaterial.reflectionTexture = hdrTexture;
-    cardMaterial.environmentIntensity = 1;
-    cardMaterial.specularIntensity = 0.3;
-    cardMaterial.reflectivityTexture = new BABYLON.Texture(
-      'http://textures.oss-cn-beijing.aliyuncs.com/uno/UNO_cards_deck.svg',
-      scene
-    );
-    // cardMaterial.specularTexture = new BABYLON.Texture(
+    // let card = BABYLON.MeshBuilder.CreateBox(
+    //   'card',
+    //   { width: 0.6, height: 0.002, depth: 0.4, faceUV },
+    //   scene
+    // );
+    // card.translate(new BABYLON.Vector3(0, 1, 0), 0.5);
+    // var cardMaterial = new BABYLON.StandardMaterial('mat', scene);
+    // cardMaterial.alpha = 0.5;
+    // cardMaterial.diffuseTexture = new BABYLON.Texture(
     //   'http://textures.oss-cn-beijing.aliyuncs.com/uno/UNO_cards_deck.svg',
     //   scene
     // );
-    card.material = cardMaterial;
+
+    // card.material = cardMaterial;
   }
 
   render() {
