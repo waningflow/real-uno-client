@@ -14,24 +14,18 @@ class Game extends React.Component {
       'Camera',
       -Math.PI / 2,
       Math.PI / 4,
-      50,
+      10,
       BABYLON.Vector3.Zero(),
       scene
     );
     camera.attachControl(canvas, true);
-    camera.minZ = 0.1;
+    camera.minZ = 1;
 
-    var skybox = BABYLON.Mesh.CreateBox('skyBox', 100.0, scene);
-    var skyboxMaterial = new BABYLON.StandardMaterial('skyBox', scene);
-    skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.disableLighting = true;
-    skybox.infiniteDistance = true;
-    skybox.material = skyboxMaterial;
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(
+    var envTexture = new BABYLON.CubeTexture(
       'http://texture.waningflow.com/uno/environment.dds',
       scene
     );
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    scene.createDefaultSkybox(envTexture, true, 1000);
 
     // var columns = 14; // 6 columns
     // var rows = 8; // 4 rows
