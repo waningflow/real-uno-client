@@ -51,7 +51,7 @@ class Game extends React.Component {
     for (var i = 0; i < 6; i++) {
       faceUV[i] = new BABYLON.Vector4(0, 0, 0, 0);
     }
-    faceUV[4] = new BABYLON.Vector4(1 / columns, 0, 2 / columns, 1 / rows);
+    faceUV[4] = new BABYLON.Vector4(0, 0, 1 / columns, 1 / rows);
     faceUV[5] = new BABYLON.Vector4(2 / columns, 0, 3 / columns, 1 / rows);
 
     let card = BABYLON.MeshBuilder.CreateBox(
@@ -62,7 +62,7 @@ class Game extends React.Component {
     card.position = new BABYLON.Vector3(0, 2, 0);
     var cardMaterial = new BABYLON.StandardMaterial('mat', scene);
     cardMaterial.diffuseTexture = new BABYLON.Texture(
-      'http://textures.oss-cn-beijing.aliyuncs.com/uno/UNO_cards_deck.svg',
+      'http://textures.oss-cn-beijing.aliyuncs.com/uno/UNO_cards_alpha.png',
       scene
     );
     cardMaterial.diffuseTexture.hasAlpha = true;
