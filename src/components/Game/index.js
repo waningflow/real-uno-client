@@ -33,7 +33,7 @@ class Game extends React.Component {
 
     var table = BABYLON.MeshBuilder.CreateBox(
       'table',
-      { width: 10, height: 0.5, depth: 10 },
+      { width: 10, height: 0.4, depth: 10 },
       scene
     );
     var tableMaterial = new BABYLON.StandardMaterial('tableMaterial', scene);
@@ -43,31 +43,39 @@ class Game extends React.Component {
     );
     table.material = tableMaterial;
 
-    var columns = 14; // 6 columns
-    var rows = 8; // 4 rows
+    let columns = 14; // 6 columns
+    let rows = 8; // 4 rows
 
-    var faceUV = new Array(6);
-
-    for (var i = 0; i < 6; i++) {
-      faceUV[i] = new BABYLON.Vector4(0, 0, 0, 0);
-    }
-    faceUV[4] = new BABYLON.Vector4(0, 0, 1 / columns, 1 / rows);
-    faceUV[5] = new BABYLON.Vector4(2 / columns, 0, 3 / columns, 1 / rows);
-
-    let card = BABYLON.MeshBuilder.CreateBox(
-      'card',
-      { width: 3, height: 0.001, depth: 2, faceUV },
-      scene
-    );
-    card.position = new BABYLON.Vector3(0, 2, 0);
-    var cardMaterial = new BABYLON.StandardMaterial('mat', scene);
+    let cardMaterial = new BABYLON.StandardMaterial('mat', scene);
     cardMaterial.diffuseTexture = new BABYLON.Texture(
       'http://textures.oss-cn-beijing.aliyuncs.com/uno/UNO_cards_alpha.png',
       scene
     );
     cardMaterial.diffuseTexture.hasAlpha = true;
 
-    card.material = cardMaterial;
+    function genCard(num) {
+      let faceUV = new Array(6);
+
+      for (let i = 0; i < 6; i++) {
+        faceUV[i] = new BABYLON.Vector4(0, 0, 0, 0);
+      }
+      faceUV[4] = new BABYLON.Vector4(1 / columns, 1 / rows, 0, 0);
+      faceUV[5] = new BABYLON.Vector4(2 / columns, 0, 3 / columns, 1 / rows);
+
+      let card = BABYLON.MeshBuilder.CreateBox(
+        'card',
+        { width: 3, height: 0.01, depth: 2, faceUV },
+        scene
+      );
+      card.position = new BABYLON.Vector3(-2, 0.2 + 0.01 * num, 0);
+      card.rotation.y = -Math.PI / 2;
+
+      card.material = cardMaterial;
+    }
+
+    for (let i = 0; i < 108; i++) {
+      genCard(i + 1);
+    }
   }
 
   render() {
