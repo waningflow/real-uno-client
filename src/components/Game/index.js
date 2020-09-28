@@ -14,7 +14,7 @@ class Game extends React.Component {
       'Camera',
       -Math.PI / 2,
       Math.PI / 4,
-      13,
+      15,
       BABYLON.Vector3.Zero(),
       scene
     );
@@ -81,6 +81,10 @@ class Game extends React.Component {
     }
 
     let topCard = cards[107];
+
+    let qEase = new BABYLON.QuinticEase();
+    qEase.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+
     let pickCardAnimation = new BABYLON.Animation(
       'pickCardAnimation',
       'position',
@@ -90,14 +94,31 @@ class Game extends React.Component {
     );
     let keys = [];
     keys.push({ frame: 0, value: topCard.position });
-    keys.push({ frame: 100, value: new BABYLON.Vector3(0, 2, -5) });
+    keys.push({ frame: 100, value: new BABYLON.Vector3(0, 2, -5.5) });
     pickCardAnimation.setKeys(keys);
-    let qEase = new BABYLON.QuinticEase();
-    qEase.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
     pickCardAnimation.setEasingFunction(qEase);
+
+    let pickCardAnimation2 = new BABYLON.Animation(
+      'pickCardAnimation2',
+      'rotation',
+      30,
+      BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+      BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+    );
+    let keys2 = [];
+    keys2.push({ frame: 0, value: topCard.rotation });
+    keys2.push({ frame: 10, value: topCard.rotation });
+    keys2.push({
+      frame: 100,
+      value: new BABYLON.Vector3(0, Math.PI / 2, Math.PI / 2 + Math.PI / 4),
+    });
+    pickCardAnimation2.setKeys(keys2);
+    pickCardAnimation2.setEasingFunction(qEase);
+
     topCard.animations.push(pickCardAnimation);
+    topCard.animations.push(pickCardAnimation2);
     setTimeout(async () => {
-      var anim = scene.beginAnimation(topCard, 0, 100, false, 2);
+      var anim = scene.beginAnimation(topCard, 0, 100, false, 3);
       // await anim.waitAsync();
     }, 1000);
   }
