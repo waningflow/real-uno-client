@@ -53,6 +53,7 @@ class Game extends React.Component {
     );
     cardMaterial.diffuseTexture.hasAlpha = true;
 
+    let cards = [];
     function genCard(num) {
       let faceUV = new Array(6);
 
@@ -71,11 +72,34 @@ class Game extends React.Component {
       card.rotation.y = -Math.PI / 2;
 
       card.material = cardMaterial;
+      return card;
     }
 
     for (let i = 0; i < 108; i++) {
-      genCard(i + 1);
+      let card = genCard(i + 1);
+      cards[i] = card;
     }
+
+    let topCard = cards[107];
+    let pickCardAnimation = new BABYLON.Animation(
+      'pickCardAnimation',
+      'position',
+      30,
+      BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+      BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+    );
+    let keys = [];
+    keys.push({ frame: 0, value: topCard.position });
+    keys.push({ frame: 100, value: new BABYLON.Vector3(0, 2, -5) });
+    pickCardAnimation.setKeys(keys);
+    let qEase = new BABYLON.QuinticEase();
+    qEase.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+    pickCardAnimation.setEasingFunction(qEase);
+    topCard.animations.push(pickCardAnimation);
+    setTimeout(async () => {
+      var anim = scene.beginAnimation(topCard, 0, 100, false, 2);
+      // await anim.waitAsync();
+    }, 1000);
   }
 
   render() {
