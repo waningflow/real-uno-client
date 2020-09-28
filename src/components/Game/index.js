@@ -1,6 +1,7 @@
 import React from 'react';
 import * as BABYLON from 'babylonjs';
 import Scene from 'babylonjs-hook';
+import Player from './Player';
 import './index.less';
 
 class Game extends React.Component {
@@ -80,47 +81,10 @@ class Game extends React.Component {
       cards[i] = card;
     }
 
-    function pickCard(currentCard) {
-      let qEase = new BABYLON.QuinticEase();
-      qEase.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-
-      let pickCardAnimation = new BABYLON.Animation(
-        'pickCardAnimation',
-        'position',
-        30,
-        BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
-        BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
-      );
-      let keys = [];
-      keys.push({ frame: 0, value: currentCard.position });
-      keys.push({ frame: 100, value: new BABYLON.Vector3(0, 2, -5.5) });
-      pickCardAnimation.setKeys(keys);
-      pickCardAnimation.setEasingFunction(qEase);
-
-      let pickCardAnimation2 = new BABYLON.Animation(
-        'pickCardAnimation2',
-        'rotation',
-        30,
-        BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
-        BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
-      );
-      let keys2 = [];
-      keys2.push({ frame: 0, value: currentCard.rotation });
-      keys2.push({ frame: 10, value: currentCard.rotation });
-      keys2.push({
-        frame: 100,
-        value: new BABYLON.Vector3(0, Math.PI / 2, Math.PI / 2 + Math.PI / 4),
-      });
-      pickCardAnimation2.setKeys(keys2);
-      pickCardAnimation2.setEasingFunction(qEase);
-
-      currentCard.animations.push(pickCardAnimation);
-      currentCard.animations.push(pickCardAnimation2);
-      return scene.beginAnimation(currentCard, 0, 100, false, 3);
-    }
+    let p1 = new Player({ scene });
     setTimeout(async () => {
       for (let i = 107; i >= 0; i--) {
-        await pickCard(cards[i]).waitAsync();
+        await p1.pickCard(cards[i]);
       }
     }, 1000);
   }
