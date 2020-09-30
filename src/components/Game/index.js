@@ -83,7 +83,7 @@ class Game extends React.Component {
 
     let p1 = new Player({ scene });
     setTimeout(async () => {
-      for (let i = 107; i >= 0; i--) {
+      for (let i = 107; i >= 100; i--) {
         await p1.pickCard(cards[i]);
       }
     }, 1000);
