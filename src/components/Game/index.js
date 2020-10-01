@@ -2,6 +2,7 @@ import React from 'react';
 import * as BABYLON from 'babylonjs';
 import Scene from 'babylonjs-hook';
 import Player from './Player';
+import { cards as cardSource, cardids, getRandomCardids } from './cards';
 import './index.less';
 
 class Game extends React.Component {
@@ -55,14 +56,18 @@ class Game extends React.Component {
     cardMaterial.diffuseTexture.hasAlpha = true;
 
     let cards = [];
-    function genCard(num) {
+    function genCard(num, cardKey) {
+      const {
+        axis: { x, y },
+      } = cardSource[cardKey];
+      // console.log(x, y);
       let faceUV = new Array(6);
 
       for (let i = 0; i < 6; i++) {
         faceUV[i] = new BABYLON.Vector4(0, 0, 0, 0);
       }
       faceUV[4] = new BABYLON.Vector4(1 / columns, 1 / rows, 0, 0);
-      faceUV[5] = new BABYLON.Vector4(2 / columns, 0, 3 / columns, 1 / rows);
+      faceUV[5] = new BABYLON.Vector4(x / columns, y / rows, (x + 1) / columns, (y + 1) / rows);
 
       let card = BABYLON.MeshBuilder.CreateBox(
         'card',
@@ -76,14 +81,18 @@ class Game extends React.Component {
       return card;
     }
 
-    for (let i = 0; i < 108; i++) {
-      let card = genCard(i + 1);
+    // console.log(cardSource);
+    const currentCardids = getRandomCardids();
+    for (let i = 0; i < currentCardids.length; i++) {
+      let card = genCard(i + 1, currentCardids[i]);
       cards[i] = card;
     }
+    let cardPoolSize = currentCardids.length;
 
     let p1 = new Player({ scene });
     setTimeout(async () => {
-      for (let i = 107; i >= 100; i--) {
+      for (let i = cardPoolSize - 1; i >= cardPoolSize - 7; i--) {
+        // console.log(cardSource[currentCardids[i]]);
         await p1.pickCard(cards[i]);
       }
     }, 1000);
