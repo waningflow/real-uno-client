@@ -17,7 +17,7 @@ export default class Player {
   }
 
   async pickCardAnim(currentCard) {
-    console.log(this.totalWidth);
+    // console.log(this.totalWidth);
     let qEase = new BABYLON.QuinticEase();
     qEase.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
 
@@ -76,7 +76,7 @@ export default class Player {
       return res;
     };
     let positionx = getExpectPositionx();
-    console.log(positionx);
+    // console.log(positionx);
     const ps = this.cards.map(async (card, i) => {
       let arrangeCardAnimation = new BABYLON.Animation(
         'arrangeCardAnimation',

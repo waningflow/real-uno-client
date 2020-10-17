@@ -23,12 +23,13 @@ class App extends Component {
   }
   init = async () => {
     const socket = await getSocket();
-    socket.on('auto_join', ({ roomId, roomData }) => {
+    socket.on('auto_join', ({ roomId, roomData, gameData }) => {
       console.log('auto join');
       setSocketData({ roomId });
       this.setState({
         roomId,
         roomData,
+        gameData,
       });
     });
     socket.on('reset', () => {
@@ -37,6 +38,7 @@ class App extends Component {
       this.setState({
         roomId: null,
         roomData: null,
+        gameData: null,
       });
     });
     socket.on('create_room_result', ({ code, roomId, roomData, message }) => {

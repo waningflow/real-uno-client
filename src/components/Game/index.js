@@ -3,11 +3,25 @@ import * as BABYLON from 'babylonjs';
 import Scene from 'babylonjs-hook';
 import Player from './Player';
 import { cards as cardSource, cardids, getRandomCardids } from './cards';
+import { getSocket, setSocketData } from '../../socket';
 import './index.less';
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    this.init();
+  }
+
+  async init() {
+    console.log('player_ready');
+    const socket = await getSocket();
+    socket.emit('player_ready');
+    socket.on('game_change', ({ from, to, actions }) => {
+      console.log(from, to, actions);
+    });
   }
 
   handleSceneReady(scene) {
