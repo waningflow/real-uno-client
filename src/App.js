@@ -3,7 +3,7 @@ import { Button, Input, message as Toast, Tooltip } from 'antd';
 import cn from 'classnames';
 import MessageBox from './components/MessageBox';
 import Game from './components/Game';
-import { getSocket, setSocketData } from './socket';
+import { getSocketSync, getSocket, setSocketData } from './socket';
 import { getUserInfo } from './utils';
 import './App.less';
 
@@ -24,7 +24,7 @@ class App extends Component {
   init = async () => {
     const socket = await getSocket();
     socket.on('auto_join', ({ roomId, roomData, gameData }) => {
-      console.log('auto join');
+      console.log('auto join', roomId, roomData, gameData);
       setSocketData({ roomId });
       this.setState({
         roomId,
@@ -97,6 +97,20 @@ class App extends Component {
       console.log('reconnect');
     });
   };
+  componentWillUnmount() {
+    const socket = getSocketSync();
+    socket.off('auto_join');
+    socket.off('reset');
+    socket.off('create_room_result');
+    socket.off('join_room_result');
+    socket.off('update_room');
+    socket.off('connect');
+    socket.off('disconnect');
+    socket.off('reconnect_attempt');
+    socket.off('reconnect_error');
+    socket.off('reconnect_failed');
+    socket.off('reconnect');
+  }
   handleChangeInput = (e) => {
     this.setState({
       inputValue: e.target.value,
