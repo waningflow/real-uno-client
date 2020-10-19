@@ -9,6 +9,7 @@ import './index.less';
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    this.handleSceneReady = this.handleSceneReady.bind(this);
   }
 
   componentDidMount() {
@@ -30,6 +31,8 @@ class Game extends React.Component {
   }
 
   handleSceneReady(scene) {
+    const { gameData } = this.props;
+    const { cardsLibrary, libraryCount } = gameData;
     const canvas = scene.getEngine().getRenderingCanvas();
     const camera = new BABYLON.ArcRotateCamera(
       'Camera',
@@ -101,20 +104,20 @@ class Game extends React.Component {
     }
 
     // console.log(cardSource);
-    const currentCardids = getRandomCardids();
-    for (let i = 0; i < currentCardids.length; i++) {
-      let card = genCard(i + 1, currentCardids[i]);
+    // const currentCardids = getRandomCardids();
+    for (let i = 0; i < libraryCount; i++) {
+      let card = genCard(i + 1, cardsLibrary[libraryCount - i - 1]);
       cards[i] = card;
     }
-    let cardPoolSize = currentCardids.length;
+    // let cardPoolSize = currentCardids.length;
 
-    let p1 = new Player({ scene });
-    setTimeout(async () => {
-      for (let i = cardPoolSize - 1; i >= cardPoolSize - 7; i--) {
-        // console.log(cardSource[currentCardids[i]]);
-        await p1.pickCard(cards[i]);
-      }
-    }, 1000);
+    // let p1 = new Player({ scene });
+    // setTimeout(async () => {
+    //   for (let i = cardPoolSize - 1; i >= cardPoolSize - 7; i--) {
+    //     // console.log(cardSource[currentCardids[i]]);
+    //     await p1.pickCard(cards[i]);
+    //   }
+    // }, 1000);
   }
 
   render() {

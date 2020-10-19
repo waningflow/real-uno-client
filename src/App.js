@@ -144,7 +144,7 @@ class App extends Component {
       <div className="App">
         {roomId ? (
           gameData ? (
-            <Game />
+            <Game gameData={gameData} />
           ) : (
             <div className="home-main-container">
               <div className="home-main-header">
