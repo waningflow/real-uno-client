@@ -12,3 +12,25 @@
   touch-action: none;
   outline: none;
 }
+
+.game-player-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 120px;
+  height: 140px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  .game-player-icon {
+    width: 100px;
+    height: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+  .game-player-name {
+    color: #ffffff;
+  }
+}

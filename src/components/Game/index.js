@@ -9,6 +9,7 @@ import './index.less';
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    this.playersInfo = this.parsePlayers();
     this.handleSceneReady = this.handleSceneReady.bind(this);
   }
 
@@ -28,6 +29,69 @@ class Game extends React.Component {
   componentWillUnmount() {
     const socket = getSocketSync();
     socket.off('game_change');
+  }
+
+  forfrom(startIndex, l, cb) {
+    for (let i = 0; i < l; i++) {
+      cb(startIndex, i);
+      startIndex = (startIndex + 1) % l;
+    }
+  }
+
+  parsePlayers() {
+    const { userInfo, gameData } = this.props;
+    const { players } = gameData;
+    const currentIndex = players.findIndex((v) => v.userId === userInfo.userId);
+    const positions = {
+      0: {
+        left: '20px',
+        bottom: '20px',
+      },
+      1: {
+        left: 0,
+        top: '50%',
+      },
+      2: {
+        left: 0,
+        top: 0,
+      },
+      3: {
+        right: 0,
+        top: '50%',
+      },
+    };
+    const l = players.length;
+    let pos = [];
+    switch (l) {
+      case 1:
+        pos = ['0'];
+        break;
+      case 2:
+        pos = ['0', '2'];
+        break;
+      case 3:
+        pos = ['0', '1', '3'];
+        break;
+      case 4:
+        pos = ['0', '1', '2', '3'];
+        break;
+      case 5:
+        break;
+      case 6:
+        break;
+      case 7:
+        break;
+      default:
+        break;
+    }
+    let result = [];
+    this.forfrom(currentIndex, l, (i, j) => {
+      let item = { ...players[i] };
+      item.positionIndex = j;
+      item.position = positions[pos[j]];
+      result.push(item);
+    });
+    return result;
   }
 
   handleSceneReady(scene) {
@@ -121,9 +185,27 @@ class Game extends React.Component {
   }
 
   render() {
+    const { playersInfo } = this;
+    // const { players } = this.props.gameData;
+    console.log('playersInfo:', playersInfo);
     return (
       <div className="game-container">
         <Scene onSceneReady={this.handleSceneReady} className="game-canvas" />
+        {playersInfo.map((player) => {
+          return (
+            <div
+              key={player.userId}
+              className="game-player-container"
+              style={{ ...player.position }}
+            >
+              <div
+                className="game-player-icon"
+                style={{ backgroundImage: `url('${player.avatarUrl}')` }}
+              ></div>
+              <div className="game-player-name">{player.nickName}</div>
+            </div>
+          );
+        })}
       </div>
     );
   }
