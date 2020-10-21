@@ -8,6 +8,8 @@ export default class Player {
     this.cardSize = [2, 3, 0.01];
     this.spaceWidth = this.cardSize[0] / 2.5;
     this.totalWidth = 0;
+    this.targetDirection = props.targetDirection || '0'; // 0, 1, 2, 3
+    // this.targetPos = props.targetPos || [0, -5.5];
   }
 
   async pickCard(card) {
@@ -30,9 +32,15 @@ export default class Player {
     );
     let keys = [];
     keys.push({ frame: 0, value: currentCard.position });
+    const vec3Map1 = {
+      0: [this.totalWidth / 2 + this.cardSize[0] / 2, 2, -5.5],
+      1: [this.totalWidth / 2 + this.cardSize[0] / 2, 2, -5.5],
+      2: [this.totalWidth / 2 + this.cardSize[0] / 2, 2, 5.5],
+      3: [this.totalWidth / 2 + this.cardSize[0] / 2, 2, -5.5],
+    };
     keys.push({
       frame: 100,
-      value: new BABYLON.Vector3(this.totalWidth / 2 + this.cardSize[0] / 2, 2, -5.5),
+      value: new BABYLON.Vector3(...vec3Map1[this.targetDirection]),
     });
     pickCardAnimation.setKeys(keys);
     pickCardAnimation.setEasingFunction(qEase);
@@ -47,9 +55,15 @@ export default class Player {
     let keys2 = [];
     keys2.push({ frame: 0, value: currentCard.rotation });
     keys2.push({ frame: 10, value: currentCard.rotation });
+    const vec3Map2 = {
+      0: [0, Math.PI / 2, Math.PI / 2 + Math.PI / 4],
+      1: [0, Math.PI / 2, Math.PI / 2 + Math.PI / 4],
+      2: [0, -Math.PI / 2, Math.PI / 2 - Math.PI / 4],
+      3: [0, Math.PI / 2, Math.PI / 2 + Math.PI / 4],
+    };
     keys2.push({
       frame: 100,
-      value: new BABYLON.Vector3(0, Math.PI / 2, Math.PI / 2 + Math.PI / 4),
+      value: new BABYLON.Vector3(...vec3Map2[this.targetDirection]),
     });
     pickCardAnimation2.setKeys(keys2);
     pickCardAnimation2.setEasingFunction(qEase);

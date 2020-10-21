@@ -6,9 +6,16 @@ import { cards as cardSource, cardids, getRandomCardids } from './cards';
 import { getSocketSync, getSocket, setSocketData } from '../../socket';
 import './index.less';
 
+const AT = {
+  DealCard: 'DealCard',
+  ShuffleCard: 'ShuffleCard',
+  CutCard: 'CutCard',
+};
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
+    this.libraryCount = this.props.gameData.libraryCount;
     this.playersInfo = this.parsePlayers();
     this.handleSceneReady = this.handleSceneReady.bind(this);
   }
@@ -23,12 +30,27 @@ class Game extends React.Component {
     socket.emit('player_ready');
     socket.on('game_change', ({ from, to, actions }) => {
       console.log(from, to, actions);
+      this.handleActions(actions);
     });
   }
 
   componentWillUnmount() {
     const socket = getSocketSync();
     socket.off('game_change');
+  }
+
+  async handleActions(actions) {
+    for (let i = 0; i < actions.length; i++) {
+      const action = actions[i];
+      if (action.type === AT.DealCard) {
+        const toUserId = action.value.to;
+        const toPlayer = this.playersInfo.find((v) => v.userId === toUserId);
+        for (let j = 0; j < action.value.count; j++) {
+          await toPlayer._player.pickCard(this.cards[this.libraryCount - 1]);
+          this.libraryCount -= 1;
+        }
+      }
+    }
   }
 
   forfrom(startIndex, l, cb) {
@@ -42,22 +64,34 @@ class Game extends React.Component {
     const { userInfo, gameData } = this.props;
     const { players } = gameData;
     const currentIndex = players.findIndex((v) => v.userId === userInfo.userId);
-    const positions = {
+    const ps = {
       0: {
-        left: '20px',
-        bottom: '20px',
+        axis: {
+          left: '20px',
+          bottom: '20px',
+        },
+        targetDirection: '0',
       },
       1: {
-        left: 0,
-        top: '50%',
+        axis: {
+          left: 0,
+          top: '50%',
+        },
+        targetDirection: '1',
       },
       2: {
-        left: 0,
-        top: 0,
+        axis: {
+          left: '20px',
+          top: '20px',
+        },
+        targetDirection: '2',
       },
       3: {
-        right: 0,
-        top: '50%',
+        axis: {
+          right: 0,
+          top: '50%',
+        },
+        targetDirection: '3',
       },
     };
     const l = players.length;
@@ -88,7 +122,7 @@ class Game extends React.Component {
     this.forfrom(currentIndex, l, (i, j) => {
       let item = { ...players[i] };
       item.positionIndex = j;
-      item.position = positions[pos[j]];
+      item.position = ps[pos[j]];
       result.push(item);
     });
     return result;
@@ -175,6 +209,10 @@ class Game extends React.Component {
     }
     // let cardPoolSize = currentCardids.length;
 
+    this.cards = cards;
+    this.playersInfo.forEach((v) => {
+      v._player = new Player({ scene, targetDirection: v.position.targetDirection });
+    });
     // let p1 = new Player({ scene });
     // setTimeout(async () => {
     //   for (let i = cardPoolSize - 1; i >= cardPoolSize - 7; i--) {
@@ -196,7 +234,7 @@ class Game extends React.Component {
             <div
               key={player.userId}
               className="game-player-container"
-              style={{ ...player.position }}
+              style={{ ...player.position.axis }}
             >
               <div
                 className="game-player-icon"
