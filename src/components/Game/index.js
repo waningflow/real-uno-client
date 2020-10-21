@@ -229,7 +229,7 @@ class Game extends React.Component {
     // 生成手牌
     this.playersInfo.forEach((v) => {
       v._player = new Player({ scene, targetDirection: v.position.targetDirection });
-      if (!v.currentCards) return;
+      if (!v.currentCards || !v.currentCards.length) return;
       v.currentCards.forEach((cv) => {
         let card = genCard(
           cv,
