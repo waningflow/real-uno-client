@@ -176,7 +176,7 @@ class Game extends React.Component {
     cardMaterial.diffuseTexture.hasAlpha = true;
 
     let cards = [];
-    function genCard(num, cardKey) {
+    function genCard(cardKey, position, rotation) {
       const {
         axis: { x, y },
       } = cardSource[cardKey];
@@ -194,32 +194,52 @@ class Game extends React.Component {
         { width: 3, height: 0.01, depth: 2, faceUV },
         scene
       );
-      card.position = new BABYLON.Vector3(-2, 0.2 + 0.01 * num, 0);
-      card.rotation.y = -Math.PI / 2;
+      card.position = position;
+      card.rotation = rotation;
 
       card.material = cardMaterial;
       return card;
     }
 
-    // console.log(cardSource);
-    // const currentCardids = getRandomCardids();
+    // 生成牌库
     for (let i = 0; i < libraryCount; i++) {
-      let card = genCard(i + 1, cardsLibrary[libraryCount - i - 1]);
+      let card = genCard(
+        cardsLibrary[libraryCount - i - 1],
+        new BABYLON.Vector3(-2, 0.2 + 0.01 * (i + 1), 0),
+        new BABYLON.Vector3(0, -Math.PI / 2, 0)
+      );
       cards[i] = card;
     }
-    // let cardPoolSize = currentCardids.length;
-
     this.cards = cards;
+
+    // 生成弃牌库
+
+    const vec3Map1 = {
+      0: [0, 2, -5.5],
+      1: [0, 2, -5.5],
+      2: [0, 2, 5.5],
+      3: [0, 2, -5.5],
+    };
+    const vec3Map2 = {
+      0: [0, Math.PI / 2, Math.PI / 2 + Math.PI / 4],
+      1: [0, Math.PI / 2, Math.PI / 2 + Math.PI / 4],
+      2: [0, -Math.PI / 2, Math.PI / 2 - Math.PI / 4],
+      3: [0, Math.PI / 2, Math.PI / 2 + Math.PI / 4],
+    };
+    // 生成手牌
     this.playersInfo.forEach((v) => {
       v._player = new Player({ scene, targetDirection: v.position.targetDirection });
+      if (!v.currentCards) return;
+      v.currentCards.forEach((cv) => {
+        let card = genCard(
+          cv,
+          new BABYLON.Vector3(...vec3Map1[v.position.targetDirection]),
+          new BABYLON.Vector3(...vec3Map2[v.position.targetDirection])
+        );
+        v._player.cards.push(card);
+      });
+      v._player.arrangeCard();
     });
-    // let p1 = new Player({ scene });
-    // setTimeout(async () => {
-    //   for (let i = cardPoolSize - 1; i >= cardPoolSize - 7; i--) {
-    //     // console.log(cardSource[currentCardids[i]]);
-    //     await p1.pickCard(cards[i]);
-    //   }
-    // }, 1000);
   }
 
   render() {

@@ -18,6 +18,10 @@ export default class Player {
     await this.arrangeCardAnim();
   }
 
+  async arrangeCard() {
+    await this.arrangeCardAnim();
+  }
+
   async pickCardAnim(currentCard) {
     // console.log(this.totalWidth);
     let qEase = new BABYLON.QuinticEase();
@@ -83,7 +87,8 @@ export default class Player {
 
   async arrangeCardAnim() {
     const getExpectPositionx = () => {
-      let left = -this.totalWidth / 2;
+      const totalWidth = (this.cards.length - 1) * this.spaceWidth + this.cardSize[0];
+      let left = -totalWidth / 2;
       let res = this.cards.map((v, i) => {
         return left + i * this.spaceWidth + this.cardSize[0] / 2;
       });
